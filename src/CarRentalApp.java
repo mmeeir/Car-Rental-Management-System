@@ -61,14 +61,14 @@ public class CarRentalApp {
         rents.add(newRental);
         System.out.println("Rental added successfully!");
     }
-    private int finishRent(){
+    public int finishRent(){
 
         return 0;
     }
-    private void deleteRent() {
+    public void deleteRent() {
 
     }
-    private void editRentItem() {
+    public void editRentItem() {
 
     }
     public void printAllCars() {
