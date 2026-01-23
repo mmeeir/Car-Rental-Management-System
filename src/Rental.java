@@ -1,50 +1,58 @@
+
+import java.time.LocalDate;
 public class Rental {
+    private final Car selectedCar;
     private int id;
-    private int idGen;
-    private int vehicleId;
-    private int paymentId;
+    private int carId;
     private int customerId;
-    private Car selectedCar;
+    private int paymentId;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private double totalCost;
+    private String status;
     private String customerName;
-    public Rental(int id, Car selectedCar, String customerName) {
-        this.id = idGen++;
-        this.selectedCar = selectedCar;
-        this.customerName = customerName;
-    }
-    public Rental(int vehicleId, int paymentId, int customerId) {
-        this.vehicleId = vehicleId;
-        this.paymentId = paymentId;
+
+
+    public Rental(int carId, int customerId, LocalDate startDate, LocalDate endDate, double totalCost) {
+        this.carId = carId;
         this.customerId = customerId;
-    }
-    public int getVehicleId() {
-        return vehicleId;
-    }
-    public void setVehicleId(int vehicleId) {
-        this.vehicleId = vehicleId;
-    }
-    public int getPaymentId() {
-        return paymentId;
-    }
-    public void setPaymentId(int paymentId) {
-        this.paymentId = paymentId;
-    }
-    public int getCustomerId() {
-        return customerId;
-    }
-    public Car getSelectedCar() {
-        return selectedCar;
-    }
-    public void setSelectedCar(Car selectedCar) {
-        this.selectedCar = selectedCar;
-    }
-    public String getCustomerName() {
-        return customerName;
-    }
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.totalCost = totalCost;
+        this.status = "ACTIVE";
     }
 
-    public void setCustomerId(int customerId) {
+
+    public Rental(int id, int carId, int customerId, int paymentId, LocalDate startDate, LocalDate endDate, double totalCost, String status) {
+        this.id = id;
+        this.carId = carId;
         this.customerId = customerId;
+        this.paymentId = paymentId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.totalCost = totalCost;
+        this.status = status;
     }
+
+    public Rental(int i, Car selectedCar, String customerName) {
+        this.customerName = customerName;
+        this.selectedCar = selectedCar;
+    }
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public int getCarId() { return carId; }
+    public void setCarId(int carId) { this.carId = carId; }
+    public int getCustomerId() { return customerId; }
+    public void setCustomerId(int customerId) { this.customerId = customerId; }
+    public int getPaymentId() { return paymentId; }
+    public void setPaymentId(int paymentId) { this.paymentId = paymentId; }
+    public LocalDate getStartDate() { return startDate; }
+    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+    public LocalDate getEndDate() { return endDate; }
+    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+    public double getTotalCost() { return totalCost; }
+    public void setTotalCost(double totalCost) { this.totalCost = totalCost; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

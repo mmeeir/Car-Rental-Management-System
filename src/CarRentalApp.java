@@ -8,9 +8,9 @@ public class CarRentalApp {
     private List<Rental> rents = new ArrayList<>();
     private List<Car> cars = new ArrayList<>();
     public CarRentalApp() {
-        cars.add(new Car(1, "Toyota Camry", 50.0));
-        cars.add(new Car(2, "Honda Civic", 45.0));
-        cars.add(new Car(3, "BMW M5", 120.0));
+        cars.add(new Car("Toyota Camry", 1, 50.0));
+        cars.add(new Car("Honda Civic", 2, 45.0));
+        cars.add(new Car("BMW M5", 3, 120.0));
     }
     public void run() {
         boolean running = true;
