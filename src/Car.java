@@ -34,8 +34,7 @@ public class Car {
 
     @Override
     public String toString() {
-        return id + ". " + model +
-                " - $" + pricePerDay + "/day" +
-                (available ? " (Available)" : " (Rented)");
+        return id + ". " + model + " - $" + pricePerDay + "/day"
+                + (available ? " (Available)" : " (Rented)");
     }
 }
