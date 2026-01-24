@@ -124,5 +124,4 @@ public class CarRentalApp {
         CarRentalApp app = new CarRentalApp();
         app.run();
     }
-
 }
