@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
-      <module fileurl="file://$PROJECT_DIR$/assignment4.iml" filepath="$PROJECT_DIR$/assignment4.iml" />
-=======
       <module fileurl="file://$PROJECT_DIR$/Car Rental Management System.iml" filepath="$PROJECT_DIR$/Car Rental Management System.iml" />
->>>>>>> 0094377377213be7715a94178bd789171a879337
     </modules>
   </component>
 </project>

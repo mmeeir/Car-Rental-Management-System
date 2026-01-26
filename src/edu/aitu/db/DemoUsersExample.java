@@ -1,4 +1,4 @@
-package edu.aitu.oop3.db;
+package edu.aitu.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,19 +1,15 @@
+package models;
+
 public class Customer {
-
-    private static int idCounter = 1;
-
     private int id;
     private String name;
-
-    public Customer(String name) {
-        this.id = idCounter++;
+    public Customer(int id, String name) {
+        this.id = id;
         this.name = name;
     }
-
     public int getId() {
         return id;
     }
-
     public String getName() {
         return name;
     }

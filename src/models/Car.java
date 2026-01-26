@@ -1,15 +1,17 @@
+package models;
+
 public class Car {
 
     private int id;
     private String model;
     private double pricePerDay;
-    private boolean available;
+    private boolean isAvailable;
 
-    public Car(int id, String model, double pricePerDay) {
+    public Car(int id, String model, double pricePerDay, boolean isAvailable) {
         this.id = id;
         this.model = model;
         this.pricePerDay = pricePerDay;
-        this.available = true;
+        this.isAvailable = isAvailable;
     }
 
     public int getId() {
@@ -25,16 +27,16 @@ public class Car {
     }
 
     public boolean isAvailable() {
-        return available;
+        return isAvailable;
     }
 
     public void setAvailable(boolean available) {
-        this.available = available;
+        this.isAvailable = available;
     }
 
     @Override
     public String toString() {
-        return id + ". " + model + " - $" + pricePerDay + "/day"
-                + (available ? " (Available)" : " (Rented)");
+        String status = isAvailable ? "Available" : "Not Available";
+        return id + ". " + model + " - $" + pricePerDay + "/day (" + status + ")";
     }
 }
