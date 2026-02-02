@@ -1,27 +1,65 @@
 package repositories;
 
-import edu.aitu.db.DataBaseConnection;
-import java.sql.*;
 
-public class CustomerRepositoryImpl implements CustomerRepository {
+import edu.aitu.db.DatabaseConnection;
+import models.Customer;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CustomerRepositoryImpl implements Repository<Customer> { // Теперь это Generic
 
     @Override
+    public void add(Customer customer) {
+        String sql = "INSERT INTO customers (name) VALUES (?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, customer.getName());
+            pstmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+
     public int createCustomerAndGetId(String name) {
         String sql = "INSERT INTO customers (name) VALUES (?)";
-        try (Connection conn = DataBaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
             pstmt.setString(1, name);
             pstmt.executeUpdate();
-
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return -1;
+    }
+
+    @Override
+    public List<Customer> getAll() {
+        List<Customer> customers = new ArrayList<>();
+        String sql = "SELECT * FROM customers";
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                customers.add(new Customer(rs.getInt("id"), rs.getString("name")));
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return customers;
+    }
+
+    @Override
+    public Customer getById(int id) {
+        String sql = "SELECT * FROM customers WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1);
+                    return new Customer(rs.getInt("id"), rs.getString("name"));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return null;
     }
 }

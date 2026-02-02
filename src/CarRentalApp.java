@@ -5,33 +5,29 @@ import models.Rental;
 import repositories.CarRepositoryImpl;
 import repositories.CustomerRepositoryImpl;
 import repositories.RentalRepositoryImpl;
+import repositories.Repository;
 import services.PricingService;
 import services.RentalService;
-import repositories.CustomerRepository;
-import java.time.LocalDate;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Scanner;
+import edu.aitu.db.FleetConfig;
 
 public class CarRentalApp {
-    private final CarRepositoryImpl carRepo = new CarRepositoryImpl();
-    private final CustomerRepository customerRepo = new CustomerRepositoryImpl();
-    private final RentalRepositoryImpl rentalRepo = new RentalRepositoryImpl() ;
+    private final Repository<Car> carRepo = new CarRepositoryImpl();
+    private final Repository<Rental> rentalRepo = new RentalRepositoryImpl();
+    private final Repository<Customer> customerRepo = new CustomerRepositoryImpl();;
     private final PricingService pricingService = new PricingService();
     private final RentalService rentalService = new RentalService(carRepo, rentalRepo, pricingService);
+
     private Scanner scanner = new Scanner(System.in);
-    private List<Car> cars = new ArrayList<>();
-    private List<Rental> rentals = new ArrayList<>();
 
-    public CarRentalApp() {
-
-    }
 
     public void run() {
         boolean running = true;
-
+        FleetConfig config = FleetConfig.getInstance();
         while (running) {
-            System.out.println("\n=== CAR RENTAL SYSTEM ===");
+            System.out.println("\n==="+ config.getCompanyName().toUpperCase() + "===");
             System.out.println("1. View cars");
             System.out.println("2. View rentals");
             System.out.println("3. Create rental");
@@ -55,7 +51,7 @@ public class CarRentalApp {
 
     private void showCars() {
         System.out.println("\n--- All Cars from Database ---");
-        List<Car> allCars = carRepo.getAllAvailableCars();
+        List<Car> allCars = carRepo.getAll();
         if (allCars.isEmpty()) {
             System.out.println("No cars found in database.");
         } else {
@@ -65,8 +61,7 @@ public class CarRentalApp {
 
     private void showRentals() {
         System.out.println("\n--- Current Rentals ---");
-        List<Rental> allRentals = rentalRepo.getAllRentals();
-
+        List<Rental> allRentals = rentalRepo.getAll();
         if (allRentals == null || allRentals.isEmpty()) {
             System.out.println("No rentals yet.");
             return;
@@ -77,7 +72,7 @@ public class CarRentalApp {
     private void createRental() {
         System.out.print("Customer name: ");
         String name = scanner.nextLine();
-        int customerId = customerRepo.createCustomerAndGetId(name);
+        int customerId = ((CustomerRepositoryImpl) customerRepo).createCustomerAndGetId(name);
 
         if (customerId == -1) {
             System.out.println("Error registering client in the database!");
@@ -86,13 +81,13 @@ public class CarRentalApp {
         Customer customer = new Customer(customerId, name);
 
         System.out.println("\nAvailable Cars:");
-        carRepo.getAllAvailableCars().forEach(System.out::println);
+        carRepo.getAll().forEach(System.out::println);
 
         System.out.print("Choose car ID: ");
         int carId = scanner.nextInt();
         scanner.nextLine();
 
-        Car selectedCar = carRepo.getCarById(carId);
+        Car selectedCar = carRepo.getById(carId);
         if (selectedCar == null) {
             System.out.println("Car not found!");
             return;
@@ -106,7 +101,7 @@ public class CarRentalApp {
         try {
             rentalService.createRental(
                     selectedCar,
-                    customer,
+                    new Customer(customerId, name),
                     startStr,
                     endStr
             );
@@ -120,7 +115,7 @@ public class CarRentalApp {
     }
 
     private void completeRental() {
-        List<Rental> allRentals = rentalRepo.getAllRentals();
+        List<Rental> allRentals = rentalRepo.getAll();
         if (allRentals.isEmpty()) {
             System.out.println("No active rentals found.");
             return;
@@ -129,20 +124,12 @@ public class CarRentalApp {
         System.out.print("Enter rental ID to complete: ");
         int id = scanner.nextInt();
         scanner.nextLine();
-        Rental selectedRental = null;
-        for (Rental r : allRentals) {
-            if (r.getId() == id) {
-                selectedRental = r;
-                break;
-            }
-        }
-        if (selectedRental != null) {
-            rentalRepo.updateStatus(id, "COMPLETED");
-            carRepo.updateAvailability(selectedRental.getCarId(), true);
+        ((RentalRepositoryImpl) rentalRepo).updateStatus(id, "COMPLETED");
 
-            System.out.println("Rental completed successfully! Car is now available.");
-        } else {
-            System.out.println("Rental with ID " + id + " not found.");
+        Car car = carRepo.getById(id);
+        if (car != null) {
+            car.setAvailable(true);
+            System.out.println("Rental completed!");
         }
     }
 
