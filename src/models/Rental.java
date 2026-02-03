@@ -1,5 +1,6 @@
 package models;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -24,6 +25,14 @@ public class Rental {
     }
 
     public Rental(int id, int carId, int customerId, LocalDate startDate, LocalDate endDate, double totalCost, String status) {
+    }
+
+    public Rental(int carId, int customerId, Date sqlStart, Date sqlEnd) {
+        this.carId = carId;
+        this.customerId = customerId;
+
+        this.startDate = sqlStart.toLocalDate();
+        this.endDate = sqlEnd.toLocalDate();
     }
 
 

@@ -3,6 +3,7 @@ package repositories;
 
 import edu.aitu.db.DatabaseConnection;
 import edu.exceptions.DatabaseException;
+import edu.exceptions.RentalOverlapException;
 import models.Rental;
 
 import java.sql.*;
@@ -107,7 +108,14 @@ public  class RentalRepositoryImpl implements Repository<Rental> {
         return null;
     }
 
+    public void addRental(Rental rental) throws RentalOverlapException {
 
+        if (isCarOccupied(rental.getCarId(), rental.getStartDate().toString(), rental.getEndDate().toString())) {
+            throw new RentalOverlapException("Car is already in rental");
+        }
+
+
+    }
 
 
 

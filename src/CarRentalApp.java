@@ -1,5 +1,6 @@
 import config.FleetConfig;
 import edu.exceptions.CarNotAvailableException;
+import edu.exceptions.RentalOverlapException;
 import models.Car;
 import models.Customer;
 import models.Rental;
@@ -9,7 +10,7 @@ import repositories.RentalRepositoryImpl;
 import repositories.Repository;
 import services.PricingService;
 import services.RentalService;
-
+import java.sql.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -103,7 +104,25 @@ public class CarRentalApp {
         String startStr = scanner.nextLine();
         System.out.print("End date (YYYY-MM-DD): ");
         String endStr = scanner.nextLine();
+        try {
 
+            java.sql.Date sqlStart = java.sql.Date.valueOf(startStr);
+            java.sql.Date sqlEnd = java.sql.Date.valueOf(endStr);
+
+
+            Rental newRental = new Rental(carId, customerId, sqlStart, sqlEnd);
+
+
+            ((RentalRepositoryImpl) rentalRepo).addRental(newRental);
+
+            System.out.println("Rental successfully created!");
+
+        } catch (RentalOverlapException e) {
+
+            System.out.println("Booking Error: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("System Error: " + e.getMessage());
+        }
         try {
             rentalService.createRental(
                     selectedCar,
