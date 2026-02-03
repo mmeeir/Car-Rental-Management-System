@@ -14,6 +14,9 @@ public class Car {
         this.isAvailable = isAvailable;
     }
 
+    public Car(int id, String model, double pricePerDay) {
+    }
+
     public int getId() {
         return id;
     }

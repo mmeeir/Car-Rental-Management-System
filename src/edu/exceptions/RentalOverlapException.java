@@ -1,9 +1,7 @@
 package edu.exceptions;
 
-
-
-public class RentalOverlapException extends Exception {
-    public RentalOverlapException(String message) {
-        super(message);
+public class DatabaseException extends RuntimeException {
+    public DatabaseException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

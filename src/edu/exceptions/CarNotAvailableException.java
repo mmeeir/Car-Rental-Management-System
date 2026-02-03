@@ -1,7 +1,6 @@
 package edu.exceptions;
 
-
-public class CarNotAvailableException extends Exception {
+public class CarNotAvailableException extends RuntimeException {
     public CarNotAvailableException(String message) {
         super(message);
     }

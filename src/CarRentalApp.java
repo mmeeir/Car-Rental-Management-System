@@ -1,3 +1,4 @@
+import config.FleetConfig;
 import edu.exceptions.CarNotAvailableException;
 import models.Car;
 import models.Customer;
@@ -11,12 +12,11 @@ import services.RentalService;
 
 import java.util.List;
 import java.util.Scanner;
-import edu.aitu.db.FleetConfig;
 
 public class CarRentalApp {
     private final Repository<Car> carRepo = new CarRepositoryImpl();
     private final Repository<Rental> rentalRepo = new RentalRepositoryImpl();
-    private final Repository<Customer> customerRepo = new CustomerRepositoryImpl();;
+    private final Repository<Customer> customerRepo = new CustomerRepositoryImpl();
     private final PricingService pricingService = new PricingService();
     private final RentalService rentalService = new RentalService(carRepo, rentalRepo, pricingService);
 
@@ -24,10 +24,13 @@ public class CarRentalApp {
 
 
     public void run() {
+        System.out.println(
+                FleetConfig.getInstance().getCompanyName()
+        );
         boolean running = true;
         FleetConfig config = FleetConfig.getInstance();
         while (running) {
-            System.out.println("\n==="+ config.getCompanyName().toUpperCase() + "===");
+            System.out.println("\n===" + config.getCompanyName().toUpperCase() + "===");
             System.out.println("1. View cars");
             System.out.println("2. View rentals");
             System.out.println("3. Create rental");
@@ -51,7 +54,7 @@ public class CarRentalApp {
 
     private void showCars() {
         System.out.println("\n--- All Cars from Database ---");
-        List<Car> allCars = carRepo.getAll();
+        List<Car> allCars = carRepo.findAll();
         if (allCars.isEmpty()) {
             System.out.println("No cars found in database.");
         } else {
@@ -61,7 +64,7 @@ public class CarRentalApp {
 
     private void showRentals() {
         System.out.println("\n--- Current Rentals ---");
-        List<Rental> allRentals = rentalRepo.getAll();
+        List<Rental> allRentals = rentalRepo.findAll();
         if (allRentals == null || allRentals.isEmpty()) {
             System.out.println("No rentals yet.");
             return;
@@ -72,7 +75,8 @@ public class CarRentalApp {
     private void createRental() {
         System.out.print("Customer name: ");
         String name = scanner.nextLine();
-        int customerId = ((CustomerRepositoryImpl) customerRepo).createCustomerAndGetId(name);
+        int customerId;
+        customerId = ((CustomerRepositoryImpl) customerRepo).createCustomerAndGetId(name);
 
         if (customerId == -1) {
             System.out.println("Error registering client in the database!");
@@ -81,13 +85,15 @@ public class CarRentalApp {
         Customer customer = new Customer(customerId, name);
 
         System.out.println("\nAvailable Cars:");
-        carRepo.getAll().forEach(System.out::println);
+        for (Car car : carRepo.findAll()) {
+            System.out.println(car);
+        }
 
         System.out.print("Choose car ID: ");
         int carId = scanner.nextInt();
         scanner.nextLine();
 
-        Car selectedCar = carRepo.getById(carId);
+        Car selectedCar = carRepo.findById();
         if (selectedCar == null) {
             System.out.println("Car not found!");
             return;
@@ -115,7 +121,7 @@ public class CarRentalApp {
     }
 
     private void completeRental() {
-        List<Rental> allRentals = rentalRepo.getAll();
+        List<Rental> allRentals = rentalRepo.findAll();
         if (allRentals.isEmpty()) {
             System.out.println("No active rentals found.");
             return;
@@ -126,14 +132,10 @@ public class CarRentalApp {
         scanner.nextLine();
         ((RentalRepositoryImpl) rentalRepo).updateStatus(id, "COMPLETED");
 
-        Car car = carRepo.getById(id);
+        Car car = carRepo.findById(id);
         if (car != null) {
             car.setAvailable(true);
             System.out.println("Rental completed!");
         }
-    }
-
-    public static void main(String[] args) {
-        new CarRentalApp().run();
     }
 }

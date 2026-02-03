@@ -2,6 +2,7 @@ package repositories;
 
 
 import edu.aitu.db.DatabaseConnection;
+import edu.exceptions.DatabaseException;
 import models.Rental;
 
 import java.sql.*;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public  class RentalRepositoryImpl implements Repository<Rental> {
     @Override
-    public void add(Rental rental) {
+    public boolean create(Rental rental) {
         String sql = "INSERT INTO rentals (car_id, customer_id, start_date, end_date, total_cost, status) VALUES (?, ?, ?, ?, ?, 'ACTIVE')";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -27,10 +28,11 @@ public  class RentalRepositoryImpl implements Repository<Rental> {
                 }
             }
         } catch (SQLException e) { e.printStackTrace(); }
+        return false;
     }
 
     @Override
-    public List<Rental> getAll() {
+    public List<Rental> findAll() {
         List<Rental> rentals = new ArrayList<>();
         String sql = "SELECT * FROM rentals";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -62,25 +64,42 @@ public  class RentalRepositoryImpl implements Repository<Rental> {
         } catch (SQLException e) { e.printStackTrace(); }
     }
     @Override
-    public Rental getById(int id) {
+    public Rental findById(int id) {
         String sql = "SELECT * FROM rentals WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return new Rental.Builder()
-                            .setId(rs.getInt("id"))
-                            .setCarId(rs.getInt("car_id"))
-                            .setCustomerId(rs.getInt("customer_id"))
-                            .setStartDate(rs.getDate("start_date").toLocalDate())
-                            .setEndDate(rs.getDate("end_date").toLocalDate())
-                            .setTotalCost(rs.getDouble("total_cost"))
-                            .setStatus(rs.getString("status"))
-                            .build();
-                }
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                return new Rental(
+                        rs.getInt("id"),
+                        rs.getInt("car_id"),
+                        rs.getInt("customer_id"),
+                        rs.getDate("start_date").toLocalDate(),
+                        rs.getDate("end_date").toLocalDate(),
+                        rs.getDouble("total_cost"),
+                        rs.getString("status")
+                );
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to find rental", e);
+        }
+
+        return null;
+    }
+
+
+    @Override
+    public void add(Rental rental) {
+
+    }
+
+    @Override
+    public Rental findById() {
         return null;
     }
 }

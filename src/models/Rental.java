@@ -13,7 +13,7 @@ public class Rental {
     private String status;
 
 
-    private Rental(Builder builder) {
+    public Rental(Builder builder) {
         this.id = builder.id;
         this.carId = builder.carId;
         this.customerId = builder.customerId;
@@ -21,6 +21,9 @@ public class Rental {
         this.endDate = builder.endDate;
         this.totalCost = builder.totalCost;
         this.status = builder.status;
+    }
+
+    public Rental(int id, int carId, int customerId, LocalDate startDate, LocalDate endDate, double totalCost, String status) {
     }
 
 

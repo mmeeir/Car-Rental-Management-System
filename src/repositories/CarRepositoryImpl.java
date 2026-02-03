@@ -2,6 +2,7 @@ package repositories;
 
 
 import edu.aitu.db.DatabaseConnection;
+import factories.CarFactory;
 import models.Car;
 
 import java.sql.*;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class CarRepositoryImpl implements Repository<Car> {
     @Override
-    public void add(Car car) {
+    public boolean create(Car car) {
 
         String sql = "INSERT INTO cars (model, price_per_day, is_available) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -20,17 +21,18 @@ public class CarRepositoryImpl implements Repository<Car> {
             pstmt.setBoolean(3, car.isAvailable());
             pstmt.executeUpdate();
         } catch (SQLException e) { e.printStackTrace(); }
+        return false;
     }
-    public List<Car> getAll() {
+    public List<Car> findAll() {
         List<Car> cars = new ArrayList<>();
         String sql = "SELECT * FROM cars WHERE is_available = true";
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                cars.add(new Car(rs.getInt("id"), rs.getString("model"), rs.getDouble("price_per_day"), rs.getBoolean("is_available")));
+                cars.add(CarFactory.fromResultSet(rs));
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+            } catch (SQLException e) { e.printStackTrace(); }
         return cars;
     }
 
@@ -46,7 +48,7 @@ public class CarRepositoryImpl implements Repository<Car> {
     }
 
     @Override
-    public Car getById(int id) {
+    public Car findById(int id) {
         String sql = "SELECT * FROM cars WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -57,6 +59,16 @@ public class CarRepositoryImpl implements Repository<Car> {
                 }
             }
         } catch (SQLException e) { e.printStackTrace(); }
+        return null;
+    }
+
+    @Override
+    public void add(Car rental) {
+
+    }
+
+    @Override
+    public Car findById() {
         return null;
     }
 

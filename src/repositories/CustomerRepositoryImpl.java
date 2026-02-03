@@ -1,23 +1,24 @@
 package repositories;
 
-
 import edu.aitu.db.DatabaseConnection;
+import edu.exceptions.DatabaseException;
 import models.Customer;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerRepositoryImpl implements Repository<Customer> { // Теперь это Generic
+public class CustomerRepositoryImpl implements Repository<Customer> {
 
     @Override
-    public void add(Customer customer) {
+    public boolean create(Customer customer) {
         String sql = "INSERT INTO customers (name) VALUES (?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, customer.getName());
             pstmt.executeUpdate();
         } catch (SQLException e) { e.printStackTrace(); }
+        return false;
     }
 
 
@@ -35,7 +36,7 @@ public class CustomerRepositoryImpl implements Repository<Customer> { // Теп�
     }
 
     @Override
-    public List<Customer> getAll() {
+    public List<Customer> findAll() {
         List<Customer> customers = new ArrayList<>();
         String sql = "SELECT * FROM customers";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -47,19 +48,38 @@ public class CustomerRepositoryImpl implements Repository<Customer> { // Теп�
         } catch (SQLException e) { e.printStackTrace(); }
         return customers;
     }
+    @Override
+    public Customer findById(int id) {
+        String sql = "SELECT * FROM customers WHERE id = ?";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                return new Customer(
+                        rs.getInt("id"),
+                        rs.getString("name")
+                );
+            }
+
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to find customer", e);
+        }
+
+        return null;
+    }
+
 
     @Override
-    public Customer getById(int id) {
-        String sql = "SELECT * FROM customers WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return new Customer(rs.getInt("id"), rs.getString("name"));
-                }
-            }
-        } catch (SQLException e) { e.printStackTrace(); }
+    public void add(Customer rental) {
+
+    }
+
+    @Override
+    public Customer findById() {
         return null;
     }
 }
