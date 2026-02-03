@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CarRepositoryImpl implements Repository<Car> {
-    @Override
+
     public boolean create(Car car) {
 
         String sql = "INSERT INTO cars (model, price_per_day, is_available) VALUES (?, ?, ?)";
@@ -20,8 +20,15 @@ public class CarRepositoryImpl implements Repository<Car> {
             pstmt.setDouble(2, car.getPricePerDay());
             pstmt.setBoolean(3, car.isAvailable());
             pstmt.executeUpdate();
-        } catch (SQLException e) { e.printStackTrace(); }
-        return false;
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @Override
+    public void add(Car car) {
+        create(car);
     }
     public List<Car> findAll() {
         List<Car> cars = new ArrayList<>();
@@ -30,7 +37,12 @@ public class CarRepositoryImpl implements Repository<Car> {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                cars.add(CarFactory.fromResultSet(rs));
+                cars.add(new Car(
+                        rs.getInt("id"),
+                        rs.getString("model"),
+                        rs.getDouble("price_per_day"),
+                        rs.getBoolean("is_available")
+                ));
             }
             } catch (SQLException e) { e.printStackTrace(); }
         return cars;
@@ -55,22 +67,21 @@ public class CarRepositoryImpl implements Repository<Car> {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return new Car(rs.getInt("id"), rs.getString("model"), rs.getDouble("price_per_day"), rs.getBoolean("is_available"));
+                    return new Car(
+                            rs.getInt("id"),
+                            rs.getString("model"),
+                            rs.getDouble("price_per_day"),
+                            rs.getBoolean("is_available")
+                    );
                 }
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return null;
     }
 
-    @Override
-    public void add(Car rental) {
 
-    }
 
-    @Override
-    public Car findById() {
-        return null;
-    }
+
 
 
 }

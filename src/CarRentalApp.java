@@ -93,7 +93,7 @@ public class CarRentalApp {
         int carId = scanner.nextInt();
         scanner.nextLine();
 
-        Car selectedCar = carRepo.findById();
+        Car selectedCar = carRepo.findById(carId);
         if (selectedCar == null) {
             System.out.println("Car not found!");
             return;

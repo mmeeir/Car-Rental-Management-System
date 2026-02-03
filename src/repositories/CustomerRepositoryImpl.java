@@ -10,7 +10,7 @@ import java.util.List;
 
 public class CustomerRepositoryImpl implements Repository<Customer> {
 
-    @Override
+
     public boolean create(Customer customer) {
         String sql = "INSERT INTO customers (name) VALUES (?)";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -74,12 +74,10 @@ public class CustomerRepositoryImpl implements Repository<Customer> {
 
 
     @Override
-    public void add(Customer rental) {
+    public void add(Customer customer) {
+        create(customer);
 
     }
 
-    @Override
-    public Customer findById() {
-        return null;
-    }
+
 }

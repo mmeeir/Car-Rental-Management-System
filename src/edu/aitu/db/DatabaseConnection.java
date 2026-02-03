@@ -10,32 +10,36 @@ import java.util.Properties;
 
 public class DatabaseConnection {
 
-    private static final String URL = "jdbc:postgresql://aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres?sslmode=require";
-    private static final String USER = "postgres.mrivkaqomaorywhzsntk";
+    private static String url;
+    private static String user;
+    private static String password;
 
 
-    private static final String PASSWORD = loadPassword();
 
-    private static String loadPassword() {
+
+    static {
         Properties props = new Properties();
 
         try (InputStream input = new FileInputStream("config.properties")) {
             props.load(input);
-            String value = props.getProperty("DB_PASSWORD");
 
-            if (value == null || value.isBlank()) {
-                throw new RuntimeException("Ошибка: DB_PASSWORD не найден в файле config.properties!");
+
+            url = props.getProperty("DB_URL");
+            user = props.getProperty("DB_USER");
+            password = props.getProperty("DB_PASSWORD");
+            Class.forName("org.postgresql.Driver");
+
+            if (url == null || user == null || password == null) {
+                throw new RuntimeException("Ошибка: Один из параметров (URL, USER, PASSWORD) не найден в config.properties!");
             }
-            return value;
-        } catch (IOException e) {
-
-            throw new RuntimeException("Критическая ошибка: Не удалось загрузить config.properties", e);
+        } catch (Exception e) {
+            throw new RuntimeException("CRITICAL ERROR", e);
         }
     }
 
     private DatabaseConnection() { }
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        return DriverManager.getConnection(url, user, password);
     }
 }

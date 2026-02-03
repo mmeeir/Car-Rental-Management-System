@@ -1,16 +1,10 @@
 package repositories;
 
 import java.util.List;
+import models.Rental;
 
 public interface Repository<T> {
-
-    boolean create(T entity);
-
-    List<T> findAll();
-
+    void add(T entity);
     T findById(int id);
-
-    void add(T rental);
-
-    T findById();
+    List<T> findAll();
 }

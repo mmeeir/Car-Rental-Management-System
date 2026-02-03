@@ -10,25 +10,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 public  class RentalRepositoryImpl implements Repository<Rental> {
+
+    public boolean isCarOccupied(int carId, String start, String end) {
+        String sql = "SELECT COUNT(*) FROM rentals WHERE car_id = ? AND status = 'ACTIVE' " +
+                "AND NOT (end_date <= ? OR start_date >= ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, carId);
+            pstmt.setDate(2, java.sql.Date.valueOf(start));
+            pstmt.setDate(3, java.sql.Date.valueOf(end));
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
     @Override
-    public boolean create(Rental rental) {
+    public void add(Rental rental) {
         String sql = "INSERT INTO rentals (car_id, customer_id, start_date, end_date, total_cost, status) VALUES (?, ?, ?, ?, ?, 'ACTIVE')";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setInt(1, rental.getCarId());
             pstmt.setInt(2, rental.getCustomerId());
             pstmt.setDate(3, Date.valueOf(rental.getStartDate()));
             pstmt.setDate(4, Date.valueOf(rental.getEndDate()));
             pstmt.setDouble(5, rental.getTotalCost());
-            pstmt.executeUpdate();
 
-            try (ResultSet rs = pstmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    System.out.println("Rental ID generated: " + rs.getInt(1));
-                }
-            }
-        } catch (SQLException e) { e.printStackTrace(); }
-        return false;
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Failed to add rental", e);
+        }
     }
 
     @Override
@@ -93,13 +108,7 @@ public  class RentalRepositoryImpl implements Repository<Rental> {
     }
 
 
-    @Override
-    public void add(Rental rental) {
 
-    }
 
-    @Override
-    public Rental findById() {
-        return null;
-    }
+
 }
