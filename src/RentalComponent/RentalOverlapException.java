@@ -1,4 +1,4 @@
-package edu.exceptions;
+package RentalComponent;
 
 public class RentalOverlapException extends Exception {
 

@@ -1,8 +1,7 @@
-package models;
+package RentalComponent;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 public class Rental {
     private int id;
@@ -58,7 +57,9 @@ public class Rental {
             return new Rental(this);
         }
     }
-
+    public boolean isExpired() {
+        return LocalDate.now().isAfter(this.endDate);
+    }
 
     public int getId() { return id; }
     public int getCarId() { return carId; }
@@ -67,4 +68,15 @@ public class Rental {
     public LocalDate getEndDate() { return endDate; }
     public double getTotalCost() { return totalCost; }
     public String getStatus() { return status; }
+    @Override
+    public String toString() {
+        return "Rental Transaction {" +
+                "ID=" + id +
+                ", carId=" + carId +
+                ", customerId=" + customerId +
+                ", dates=" + startDate + " to " + endDate +
+                ", totalCost=" + totalCost +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

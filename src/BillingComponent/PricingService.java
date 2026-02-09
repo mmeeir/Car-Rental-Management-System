@@ -1,4 +1,4 @@
-package services;
+package BillingComponent;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

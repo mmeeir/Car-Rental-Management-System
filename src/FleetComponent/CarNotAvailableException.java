@@ -1,4 +1,4 @@
-package edu.exceptions;
+package FleetComponent;
 
 public class CarNotAvailableException extends RuntimeException {
     public CarNotAvailableException(String message) {

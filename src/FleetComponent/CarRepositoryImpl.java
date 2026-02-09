@@ -1,9 +1,8 @@
-package repositories;
+package FleetComponent;
 
 
 import edu.aitu.db.DatabaseConnection;
-import factories.CarFactory;
-import models.Car;
+import repositories.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;

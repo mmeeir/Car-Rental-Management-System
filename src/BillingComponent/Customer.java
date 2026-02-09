@@ -1,4 +1,4 @@
-package models;
+package BillingComponent;
 
 public class Customer {
     private int id;

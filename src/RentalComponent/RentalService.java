@@ -1,14 +1,13 @@
-package services;
+package RentalComponent;
 
-import edu.exceptions.CarNotAvailableException;
+import FleetComponent.CarNotAvailableException;
 import edu.exceptions.InvalidDriverAgeException;
-import models.Car;
-import models.Customer;
-import models.Rental;
-import repositories.CarRepositoryImpl;
+import FleetComponent.Car;
+import BillingComponent.Customer;
 import repositories.Repository;
+import BillingComponent.PricingService;
 
-import java.time.LocalDate;
+import java.util.List;
 
 public class RentalService {
 
@@ -32,4 +31,5 @@ public class RentalService {
 
     public void createRental(Car selectedCar, Customer customer, String startStr, String endStr) {
     }
+
 }

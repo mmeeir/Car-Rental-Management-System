@@ -30,7 +30,7 @@ public class DatabaseConnection {
             Class.forName("org.postgresql.Driver");
 
             if (url == null || user == null || password == null) {
-                throw new RuntimeException("Ошибка: Один из параметров (URL, USER, PASSWORD) не найден в config.properties!");
+                throw new RuntimeException("Error (URL, USER, PASSWORD) not found in config.properties!");
             }
         } catch (Exception e) {
             throw new RuntimeException("CRITICAL ERROR", e);

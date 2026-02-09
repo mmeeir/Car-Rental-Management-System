@@ -1,16 +1,18 @@
+package ReportingComponent;
+
 import config.FleetConfig;
-import edu.exceptions.CarNotAvailableException;
-import edu.exceptions.RentalOverlapException;
-import models.Car;
-import models.Customer;
-import models.Rental;
-import repositories.CarRepositoryImpl;
-import repositories.CustomerRepositoryImpl;
-import repositories.RentalRepositoryImpl;
+import FleetComponent.CarNotAvailableException;
+import RentalComponent.RentalOverlapException;
+import FleetComponent.Car;
+import BillingComponent.Customer;
+import RentalComponent.Rental;
+import FleetComponent.CarRepositoryImpl;
+import BillingComponent.CustomerRepositoryImpl;
+import RentalComponent.RentalRepositoryImpl;
 import repositories.Repository;
-import services.PricingService;
-import services.RentalService;
-import java.sql.Date;
+import BillingComponent.PricingService;
+import RentalComponent.RentalService;
+
 import java.util.List;
 import java.util.Scanner;
 

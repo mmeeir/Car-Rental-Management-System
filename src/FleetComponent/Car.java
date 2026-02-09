@@ -1,4 +1,4 @@
-package models;
+package FleetComponent;
 
 public class Car {
 

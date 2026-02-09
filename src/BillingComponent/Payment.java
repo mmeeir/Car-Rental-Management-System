@@ -1,4 +1,4 @@
-package models;
+package BillingComponent;
 
 import java.time.LocalDate;
 public class Payment {

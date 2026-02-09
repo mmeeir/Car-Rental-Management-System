@@ -1,10 +1,9 @@
-package repositories;
+package RentalComponent;
 
 
 import edu.aitu.db.DatabaseConnection;
 import edu.exceptions.DatabaseException;
-import edu.exceptions.RentalOverlapException;
-import models.Rental;
+import repositories.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -1,6 +1,4 @@
-package factories;
-
-import models.Car;
+package FleetComponent;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

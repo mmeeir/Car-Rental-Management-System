@@ -1,8 +1,8 @@
-package repositories;
+package BillingComponent;
 
 import edu.aitu.db.DatabaseConnection;
 import edu.exceptions.DatabaseException;
-import models.Customer;
+import repositories.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
